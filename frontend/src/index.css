@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+/* ─── LIGHT THEME (default) ─── */
+:root {
+  --radius: 0.75rem;
+
+  /* Page background — warm off-white */
+  --background: #f8f7ff;
+  --foreground: #1a1535;
+
+  /* Cards — pure white with soft shadow */
+  --card: #ffffff;
+  --card-foreground: #1a1535;
+
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #1a1535;
+
+  /* Primary — rich violet */
+  --primary: #6c47ff;
+  --primary-hover: #5836e6;
+  --primary-foreground: #ffffff;
+
+  /* Secondary */
+  --secondary: #ede9ff;
+  --secondary-foreground: #3b2c8a;
+
+  /* Muted areas */
+  --muted: #f1effb;
+  --muted-foreground: #7b72a8;
+
+  /* Accent */
+  --accent: #ede9ff;
+  --accent-foreground: #3b2c8a;
+
+  /* Destructive */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  /* Borders and inputs */
+  --border: #e4e1f5;
+  --input: #f1effb;
+  --ring: #6c47ff;
+
+  /* Custom glow values for light mode */
+  --glow-primary: rgba(108, 71, 255, 0.18);
+  --glow-card: rgba(108, 71, 255, 0.06);
+  --shadow-card: 0 2px 16px rgba(108, 71, 255, 0.07), 0 1px 4px rgba(26, 21, 53, 0.06);
+  --shadow-card-hover: 0 8px 32px rgba(108, 71, 255, 0.14), 0 2px 8px rgba(26, 21, 53, 0.1);
+}
+
+/* ─── DARK THEME (opt-in) ─── */
+.dark {
+  --background: #0a0a0f;
+  --foreground: #f0f0fa;
+  --card: #12121a;
+  --card-foreground: #f0f0fa;
+  --popover: #1a1a28;
+  --popover-foreground: #f0f0fa;
+  --primary: #7c5cfc;
+  --primary-hover: #6a4de0;
+  --primary-foreground: #ffffff;
+  --secondary: #1e1e30;
+  --secondary-foreground: #c8c8e8;
+  --muted: #1a1a28;
+  --muted-foreground: #8888aa;
+  --accent: #22203a;
+  --accent-foreground: #d0d0f0;
+  --destructive: #e05252;
+  --destructive-foreground: #ffffff;
+  --border: #2a2a40;
+  --input: #1e1e30;
+  --ring: #7c5cfc;
+  --glow-primary: rgba(124, 92, 252, 0.25);
+  --glow-card: rgba(124, 92, 252, 0.08);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.4);
+  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,92,252,0.2);
+}
+
+/* ─── GLOBAL BASE ─── */
+@layer base {
+  *, *::before, *::after {
+    border-color: var(--border);
+    box-sizing: border-box;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    line-height: 1.6;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--background); }
+  ::-webkit-scrollbar-thumb {
+    background: #cbc6ef;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+}
+
+/* ─── RESPONSIVE HELPERS ─── */
+/* These are explicit so they work regardless of Tailwind purge */
+@media (min-width: 768px) {
+  .mobile-only  { display: none !important; }
+  .desktop-flex { display: flex !important; }
+}
+@media (max-width: 767px) {
+  .desktop-flex { display: none !important; }
+  .mobile-only  { display: flex !important; }
+}
+
+/* ─── UTILITY CLASSES ─── */
+@layer utilities {
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #a78bfa 0%, #6c47ff 50%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shimmer animation for skeletons */
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg,
+      var(--muted) 0%,
+      #e8e5f8 50%,
+      var(--muted) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* Fade-in-up animation */
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+    animation: fade-in-up 0.4s ease both;
+  }
+
+  /* Card hover */
+  .card-hover {
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(108, 71, 255, 0.28);
+  }
+
+  /* Soft mesh background */
+  .bg-mesh {
+    background-image:
+      radial-gradient(ellipse at 15% 40%, rgba(108,71,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(167,139,250,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 55% 85%, rgba(96,165,250,0.05) 0%, transparent 50%);
+  }
+}
