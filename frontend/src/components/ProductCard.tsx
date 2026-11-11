@@ -1,10 +1,11 @@
-import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
+﻿import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { useAddToCart, useUpdateCartItem, useRemoveFromCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getCart } from "@/api/cart";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
   product: Product;
@@ -31,10 +32,6 @@ export function ProductCard({ product }: ProductCardProps) {
   );
   const quantityInCart = cartItem?.quantity ?? 0;
 
-  const handleLoginToAdd = () => {
-    toast.error("Please login to add to cart");
-  };
-
   const handleIncrement = () => {
     updateCart.mutate({ productId: product._id, quantity: quantityInCart + 1 });
   };
@@ -48,240 +45,67 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div
-      className="card-hover"
-      style={{
-        background: "#ffffff",
-        border: "1px solid #e4e1f5",
-        borderRadius: "16px",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        boxShadow: "0 2px 12px rgba(108,71,255,0.06), 0 1px 3px rgba(26,21,53,0.05)",
-      }}
-    >
-      {/* Image */}
-      <div style={{ position: "relative", overflow: "hidden", aspectRatio: "1 / 1" }}>
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transition: "transform 0.4s ease",
-          }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLImageElement).style.transform = "scale(1)")
-          }
-        />
-
-        {/* Category badge */}
-        <span
-          style={{
-            position: "absolute",
-            top: 10,
-            left: 10,
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid #e4e1f5",
-            color: "#6c47ff",
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            padding: "3px 10px",
-            borderRadius: "99px",
-            boxShadow: "0 2px 8px rgba(108,71,255,0.1)",
-          }}
-        >
-          {product.category}
-        </span>
-
-        {/* Low stock */}
-        {product.stock > 0 && product.stock <= 5 && (
-          <span
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              background: "#fef2f2",
-              border: "1px solid #fca5a5",
-              color: "#dc2626",
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              padding: "3px 9px",
-              borderRadius: "99px",
-            }}
-          >
-            Only {product.stock} left!
+    <div className="card-hover flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+      <Link to={`/product/${product._id}`} className="flex flex-1 flex-col">
+        <div className="relative aspect-square overflow-hidden bg-muted">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+          <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-indigo-700 shadow-sm">
+            {product.category}
           </span>
-        )}
-
-        {/* Out of stock overlay */}
-        {product.stock === 0 && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(248,247,255,0.8)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              style={{
-                background: "#ffffff",
-                border: "1px solid #e4e1f5",
-                color: "#7b72a8",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                padding: "6px 16px",
-                borderRadius: "99px",
-                boxShadow: "0 2px 8px rgba(108,71,255,0.1)",
-              }}
-            >
-              Out of Stock
+          {product.stock > 0 && product.stock <= 5 && (
+            <span className="absolute right-3 top-3 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
+              Only {product.stock} left
             </span>
-          </div>
-        )}
-      </div>
-
-      {/* Info */}
-      <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.4rem", flex: 1 }}>
-        <h3
-          style={{
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            lineHeight: 1.35,
-            margin: 0,
-            color: "#1a1535",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {product.name}
-        </h3>
-
-        {/* Stars */}
-        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              size={11}
-              style={{ color: i < 4 ? "#f59e0b" : "#d1d5db", fill: i < 4 ? "#f59e0b" : "none" }}
-            />
-          ))}
-          <span style={{ fontSize: "0.7rem", color: "#7b72a8", marginLeft: 4 }}>4.2</span>
+          )}
+          {product.stock === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/75">
+              <span className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-muted-foreground shadow-sm ring-1 ring-border">
+                Out of stock
+              </span>
+            </div>
+          )}
         </div>
+        <div className="flex flex-1 flex-col gap-2 p-4">
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-foreground">{product.name}</h3>
+          <div className="flex items-center gap-1 text-amber-500">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={12} className={i < 4 ? "fill-current" : "text-gray-300"} />
+            ))}
+            <span className="ml-1 text-xs text-muted-foreground">4.2</span>
+          </div>
+          <p className="mt-auto text-lg font-bold tracking-tight text-foreground">${product.price.toFixed(2)}</p>
+        </div>
+      </Link>
 
-        <p
-          style={{
-            fontSize: "1.25rem",
-            fontWeight: 800,
-            margin: 0,
-            background: "linear-gradient(135deg, #6c47ff, #7c3aed)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          ${product.price.toFixed(2)}
-        </p>
-      </div>
-
-      {/* Cart action */}
-      <div style={{ padding: "0 1rem 1rem" }}>
+      <div className="border-t border-border p-4 pt-3">
         {!isAuthenticated ? (
           <button
-            onClick={handleLoginToAdd}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              padding: "10px 0",
-              borderRadius: "10px",
-              border: "1px solid #c4b8ff",
-              background: "#ede9ff",
-              color: "#6c47ff",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#ddd6fe";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#a78bfa";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#ede9ff";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "#c4b8ff";
-            }}
+            onClick={() => toast.error("Please login to add to cart")}
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-indigo-200 bg-indigo-50 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
           >
             <ShoppingCart size={15} />
-            Add to Cart
+            Add to cart
           </button>
         ) : quantityInCart > 0 ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid #c4b8ff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              background: "#ede9ff",
-            }}
-          >
+          <div className="flex h-10 items-center rounded-lg border border-indigo-200 bg-indigo-50">
             <button
-              style={{
-                width: 40,
-                height: 40,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "none",
-                border: "none",
-                cursor: updateCart.isPending || removeFromCart.isPending ? "not-allowed" : "pointer",
-                color: quantityInCart <= 1 ? "#c4b8ff" : "#6c47ff",
-                transition: "background 0.15s",
-              }}
+              className="inline-flex h-full w-10 items-center justify-center text-indigo-700 disabled:opacity-40"
               onClick={handleDecrement}
               disabled={updateCart.isPending || removeFromCart.isPending}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#ddd6fe"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+              aria-label="Decrease quantity"
             >
               <Minus size={14} />
             </button>
-            <span style={{ flex: 1, textAlign: "center", fontSize: "0.95rem", fontWeight: 700, color: "#1a1535" }}>
-              {quantityInCart}
-            </span>
+            <span className="flex-1 text-center text-sm font-bold text-foreground">{quantityInCart}</span>
             <button
-              style={{
-                width: 40,
-                height: 40,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "none",
-                border: "none",
-                cursor: updateCart.isPending || quantityInCart >= product.stock ? "not-allowed" : "pointer",
-                color: quantityInCart >= product.stock ? "#c4b8ff" : "#6c47ff",
-                transition: "background 0.15s",
-              }}
+              className="inline-flex h-full w-10 items-center justify-center text-indigo-700 disabled:opacity-40"
               onClick={handleIncrement}
               disabled={updateCart.isPending || quantityInCart >= product.stock}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#ddd6fe"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+              aria-label="Increase quantity"
             >
               <Plus size={14} />
             </button>
@@ -290,41 +114,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={() => addToCart.mutate({ productId: product._id, quantity: 1 })}
             disabled={addToCart.isPending || product.stock < 1}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              padding: "10px 0",
-              borderRadius: "10px",
-              border: "none",
-              background:
-                product.stock < 1
-                  ? "#f1effb"
-                  : "linear-gradient(135deg, #6c47ff, #7c3aed)",
-              color: product.stock < 1 ? "#7b72a8" : "#fff",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              cursor: product.stock < 1 || addToCart.isPending ? "not-allowed" : "pointer",
-              boxShadow: product.stock < 1 ? "none" : "0 4px 14px rgba(108,71,255,0.35)",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              if (product.stock >= 1 && !addToCart.isPending) {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "0 6px 20px rgba(108,71,255,0.5)";
-                (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                product.stock < 1 ? "none" : "0 4px 14px rgba(108,71,255,0.35)";
-              (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
-            }}
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
           >
             <ShoppingCart size={15} />
-            {addToCart.isPending ? "Adding..." : "Add to Cart"}
+            {addToCart.isPending ? "Adding..." : "Add to cart"}
           </button>
         )}
       </div>
